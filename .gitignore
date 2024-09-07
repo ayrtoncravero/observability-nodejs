@@ -6,7 +6,7 @@ tmp/
 temp/
 .env
 dist
-src/logs/
+/logs/
 public/
 docker-compose.yml
 /backup
