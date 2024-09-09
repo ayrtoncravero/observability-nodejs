@@ -11,7 +11,8 @@ COPY package*.json ./
 RUN npm install --force
 
 # 5. Copia el resto del código fuente de la aplicación
-COPY . .
+COPY src ./src
+COPY tsconfig.json ./
 
 # 6. Compila el TypeScript
 RUN npm run build
@@ -20,4 +21,4 @@ RUN npm run build
 EXPOSE 3000
 
 # 8. Define el comando para iniciar la aplicación
-CMD ["node", "start"]
+CMD ["npm", "start"]

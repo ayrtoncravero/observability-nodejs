@@ -36,22 +36,22 @@ services:
     container_name: node_exporter
     restart: unless-stopped
     ports:
-    - 9100:9100
+    - "9100:9100"
     ###### linux
-    # command:
-    # - '--path.rootfs=/host'
-    # pid: host
-    # volumes:
-    # - '/:/host:ro,rslave'
-    ###### windows
+    command:
+     - '--path.rootfs=/host'
+    pid: host
     volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-    command: 
-      - '--path.procfs=/host/proc' 
-      - '--path.sysfs=/host/sys'
-      - --collector.filesystem.ignored-mount-points
-      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+     - '/:/host:ro,rslave'
+    ###### windows
+    #volumes:
+    #  - /proc:/host/proc:ro
+    #  - /sys:/host/sys:ro
+    #command:
+    #  - '--path.procfs=/host/proc'
+    #  - '--path.sysfs=/host/sys'
+    #  - --collector.filesystem.ignored-mount-points
+    #  - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
     networks:
       - api
         
