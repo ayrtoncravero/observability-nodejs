@@ -8,5 +8,4 @@ temp/
 dist
 /logs/
 public/
-docker-compose.yml
 /backup
