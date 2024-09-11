@@ -1,6 +1,7 @@
 volumes:
   grafana-data:
-  prometheus-data:    
+  prometheus-data:
+  loki-data:
 
 services:
   grafana:
@@ -11,6 +12,20 @@ services:
     - grafana-data:/var/lib/grafana
     ports:
     - 3001:3000
+    networks:
+      - api
+
+  loki:
+    image: grafana/loki:2.0.0
+    container_name: loki
+    restart: unless-stopped
+    volumes:
+    - ./loki-config.yml:/mnt/config/loki-config.yml
+    - loki-data:/loki
+    ports:
+    - 3100:3100
+    command: 
+    - '-config.file=/mnt/config/loki-config.yml'
     networks:
       - api
 
@@ -38,20 +53,20 @@ services:
     ports:
     - "9100:9100"
     ###### linux
-    command:
-     - '--path.rootfs=/host'
-    pid: host
-    volumes:
-     - '/:/host:ro,rslave'
+    # command:
+    #  - '--path.rootfs=/host'
+    # pid: host
+    # volumes:
+    #  - '/:/host:ro,rslave'
     ###### windows
-    #volumes:
-    #  - /proc:/host/proc:ro
-    #  - /sys:/host/sys:ro
-    #command:
-    #  - '--path.procfs=/host/proc'
-    #  - '--path.sysfs=/host/sys'
-    #  - --collector.filesystem.ignored-mount-points
-    #  - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    volumes:
+     - /proc:/host/proc:ro
+     - /sys:/host/sys:ro
+    command:
+     - '--path.procfs=/host/proc'
+     - '--path.sysfs=/host/sys'
+     - --collector.filesystem.ignored-mount-points
+     - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
     networks:
       - api
         
@@ -76,6 +91,10 @@ services:
     ports:
       - "3000:3000"
     command: npm start
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push" 
     networks:
       - api
     
