@@ -144,6 +144,19 @@ app.get('/metrics', async (req, res) => {
     }
 });
 
+app.get('/health', async (req, res) => {
+    try {
+        logger.info('OK');
+
+        return res.status(200).json({
+            message: 'OK',
+        });
+    } catch(err: any) {
+        logger.error('error:', err.message);
+        res.status(500).end(err);
+    }
+});
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => logger.info(`⚡️ listening on port: ${port}`));
